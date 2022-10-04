@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const path = require('path');
+const token = require('./token');
 
 const app = express();
 app.use(bodyParser.json());
@@ -39,6 +40,10 @@ app.get('/talker/:id', async (request, response) => {
   response.status(HTTP_OK_STATUS).json(talker);
 });
 
+app.post('/login', (request, response) => {
+  const getToken = token();
+  response.status(HTTP_OK_STATUS).json({ token: getToken });
+});
 app.listen(PORT, () => {
   console.log('Online');
 });
