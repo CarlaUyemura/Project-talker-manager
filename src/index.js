@@ -72,6 +72,21 @@ app.post('/talker',
   response.status(201).json(talker);                                                       
 });
 
+app.put('/talker/:id', 
+  validateToken,
+  validateName,
+  validateDate,
+  validateRate,
+async (req, res) => {
+  const { id } = req.params;
+  const talker = { ...req.body, id: Number(id) };
+  const talkers = JSON.parse(await fs.readFile(pathTalker, 'utf-8'));
+  const index = talkers.findIndex((e) => e.id === Number(id));
+  talkers[index] = talker;
+  await fs.writeFile(pathTalker, JSON.stringify(talkers));
+  res.status(HTTP_OK_STATUS).json(talker);
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
