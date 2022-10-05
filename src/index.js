@@ -28,10 +28,20 @@ const getTalkers = async () => {
   return talkers;
 };
 
+app.get('/talker/search', validateToken, async (request, response) => {
+  const talkers = await getTalkers();
+  const { q } = request.query;
+  const result = talkers.filter((e) => e.name.includes(q));
+  if (!q) {
+   return response.status(HTTP_OK_STATUS).json(talkers);
+  }
+  response.status(HTTP_OK_STATUS).json(result);
+});
+
 app.get('/talker', async (_request, response) => {
   const talkers = await getTalkers();
   if (!talkers) return response.status(HTTP_OK_STATUS).send([]);
-
+  
   response.status(HTTP_OK_STATUS).json(talkers);
 });
 
