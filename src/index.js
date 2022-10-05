@@ -80,11 +80,20 @@ app.put('/talker/:id',
 async (req, res) => {
   const { id } = req.params;
   const talker = { ...req.body, id: Number(id) };
-  const talkers = JSON.parse(await fs.readFile(pathTalker, 'utf-8'));
+  const talkers = await getTalkers();
   const index = talkers.findIndex((e) => e.id === Number(id));
   talkers[index] = talker;
   await fs.writeFile(pathTalker, JSON.stringify(talkers));
   res.status(HTTP_OK_STATUS).json(talker);
+});
+
+app.delete('/talker/:id', validateToken, async (req, res) => {
+  const { id } = req.params;
+  const talkers = await getTalkers();
+  const arrayPosition = talkers.findIndex((item) => item.id === Number(id));
+  talkers.splice(arrayPosition, 1);
+  await fs.writeFile(pathTalker, JSON.stringify(talkers));
+  res.status(204).end();
 });
 
 app.listen(PORT, () => {
